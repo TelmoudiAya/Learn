@@ -1,0 +1,64 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <ul class="nav-list">
+      <li><a (click)="navigate('home')">Home</a></li>
+      <li><a (click)="navigate('profil')">Gestion de l'utilisateur</a></li>
+      <li><a (click)="navigate('categorie')">Gestion de Catégorie</a></li>
+      <li><a (click)="navigate('profil-admin')">Gestion de profil</a></li>
+      <li><a (click)="navigate('communicate')">Communiquer</a></li>
+      <li><a (click)="navigate('payments')">Confirmer Paiement/Inscrit</a></li>
+      <li><a (click)="navigate('verif')">Vérif Cours</a></li>
+      <li><a (click)="navigate('block-user')">Bloquer</a></li>
+      <li><a (click)="logout()">Déconnexion</a></li>
+    </ul>
+  </aside>
+  <div class="enrollments-container">
+    <input  type="text"  placeholder="Search by student name, email, or course title..."  [(ngModel)]="searchTerm" (input)="filterEnrollments()" />
+  
+    <!-- Loading spinner -->
+    <div *ngIf="loading">Loading...</div>
+    <table *ngIf="filteredEnrollments.length > 0">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Email</th>
+          <th>Course Title</th>
+          <th>Category</th>
+          <th>Duration</th>
+          <th>Price</th>
+          <th>Enrollment Date</th>
+          <th>Status</th>
+          <th>Description</th>
+  
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let enrollment of filteredEnrollments">
+          <td>{{ enrollment.studentName }}</td>
+          <td>{{ enrollment.studentEmail }}</td>
+          <td>{{ enrollment.courseTitle }}</td>
+          <td>{{ enrollment.category }}</td>
+          <td>{{ enrollment.duree }}</td>
+          <td>{{ enrollment.prix }}</td>
+          <td>{{ enrollment.enrollmentDate | date: 'shortDate' }}</td>
+          <td>{{ enrollment.status }}</td>
+      
+          <td>
+            <button class="approve-btn"  (click)="updateEnrollmentStatus(enrollment.id, 'approved')"  > Approve
+            </button>
+            <button class="reject-btn" (click)="updateEnrollmentStatus(enrollment.id, 'rejected')"> Reject
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Show message if no enrollments -->
+    <div *ngIf="filteredEnrollments.length === 0">
+      No enrollments found.
+    </div>
+    
+    
+  </div>
+  

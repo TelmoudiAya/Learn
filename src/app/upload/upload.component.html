@@ -1,0 +1,36 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>Teacher Dashboard</h2>
+    <ul class="nav-list">
+      <li><a routerLink="/home-prof">Home</a></li>
+      <li><a routerLink="/profilp">Manage Profile</a></li>
+      <li><a routerLink="/com">Communicate</a></li>
+      <li><a routerLink="/upload">Upload Courses</a></li>
+      <li><a (click)="logout()">Logout</a></li>
+    </ul>
+  </aside>
+
+  <div class="upload-container">
+    <h2>Upload Course</h2>
+    <form (ngSubmit)="addCourse()">
+      <input type="text" placeholder="Title" [(ngModel)]="newCourse.Titre" name="Titre" required />
+      <textarea placeholder="Description" [(ngModel)]="newCourse.Description" name="Description" required></textarea>
+      <input type="text" placeholder="Price" [(ngModel)]="newCourse.Prix" name="Prix" required />
+      <input type="text" placeholder="Duration" [(ngModel)]="newCourse.Duree" name="Duree" required />
+      <input type="text" placeholder="Type" [(ngModel)]="newCourse.Type" name="Type" required />
+      <input type="text" placeholder="State" [(ngModel)]="newCourse.Etat" name="Etat" required />
+      <textarea placeholder="Content" [(ngModel)]="newCourse.Contenu" name="Contenu"></textarea>
+
+      <!-- Dynamic Category Dropdown -->
+      <select [(ngModel)]="newCourse.Category" name="Category" required>
+        <option value="" disabled selected>Select Category</option>
+        <option *ngFor="let category of categories" [value]="category.name">
+          {{ category.name }}
+        </option>
+      </select>
+
+      <input type="file" (change)="onFileSelected($event)" />
+      <button type="submit">Add Course</button>
+    </form>
+  </div>
+</div>

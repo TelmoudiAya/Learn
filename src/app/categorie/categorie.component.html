@@ -1,0 +1,70 @@
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Dashboard</h2>
+      <ul class="nav-list">
+        <li><a routerLink="/home">Home</a></li>
+        <li><a routerLink="/profil">Gestion de l'utilisateur</a></li>
+        <li><a routerLink="/categorie">Gestion de Catégorie</a></li>
+        <li><a routerLink='/profil-admin'>Gestion de profil</a></li>
+        <li><a routerLink="/communicate">Communiquer</a></li>
+        <li><a routerLink="/payments">Confirmer Paiement/Inscrit</a></li>
+        <li><a routerLink="/verif">Vérif Cours</a></li>
+        <li><a routerLink="/block-user">Bloquer</a></li>
+        <li><a (click)="logout()">Déconnexion</a></li>
+      </ul>
+    </aside>
+  
+    <div class="main-content">
+      <h1>Gestion de Catégorie</h1>
+      <div class="add-category-form" *ngIf ="test">
+        <form >
+          <h2>Add New Category</h2>
+          <label for="nom">Nom:</label>
+          <input id="nom" type="text" [(ngModel)]="newCategory.nom" name="nom" />
+  
+          <div class="form-actions">
+            <button type="button" (click)="addCategory()">Add</button>
+          </div>
+        </form>
+      </div>
+      <div class="add-category-form" *ngIf="editingCategory">
+        
+        <form>
+          <h2>Edit Category</h2>
+          <label for="edit-nom">Nom:</label>
+          <input id="edit-nom" type="text" [(ngModel)]="editingCategory.nom" name="edit-nom" />
+  
+          <div class="form-actions">
+            <button type="button" (click)="confirmEdit()">Confirm</button>
+            <button type="button" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </div>
+  
+      <!-- Categories Table -->
+      <table class="category-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categories">
+            <td>{{ category.id }}</td>
+            <td>{{ category.nom }}</td>
+            <td>
+              <button (click)="editCategory(category)">Edit</button>
+              <button (click)="deleteCategory(category.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- Edit Category Form -->
+   
+    </div>
+  </div>
+  

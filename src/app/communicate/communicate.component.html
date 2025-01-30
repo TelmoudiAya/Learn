@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <ul class="nav-list">
+      <li><a routerLink="/home">Home</a></li>
+      <li><a routerLink="/profil">Gestion de l'utilisateur</a></li>
+      <li><a routerLink="/categorie">Gestion de Catégorie</a></li>
+      <li><a routerLink='/profil-admin'>Gestion de profil</a></li>
+      <li><a routerLink="/communicate">Communiquer</a></li>
+      <li><a routerLink="/payments">Confirmer Paiement/Inscrit</a></li>
+      <li><a routerLink="/verif">Vérif Cours</a></li>
+      <li><a routerLink="/block-user">Bloquer</a></li>
+      <li><a (click)="logout()">Déconnexion</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Communiquer</h1>
+
+    <div class="messenger-container">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Search by name or role"
+          [(ngModel)]="searchTerm"
+          (input)="filterUsers()"
+        />
+      </div>
+
+      <!-- Conversation List -->
+      <div class="conversation-list">
+        <div
+          class="conversation"
+          *ngFor="let user of filteredUsers"
+          (click)="selectUser(user)"
+        >
+          <h4>{{ user.name }}</h4>
+          <p>{{ user.role }}</p>
+        </div>
+      </div>
+
+      <!-- Chat Window -->
+      <div class="chat-window" *ngIf="selectedUser">
+        <div class="chat-header">
+          <h2>Chat with {{ selectedUser.name }}</h2>
+        </div>
+        <div class="message-list">
+          <div class="message" *ngFor="let message of filteredMessages">
+            <p>{{ message.text }}</p>
+            <small>{{ message.date }}</small>
+            <small>{{ message.status }}</small>
+          </div>
+        </div>
+
+        <!-- New Message Form -->
+        <div class="new-message-form">
+          <form>
+            <textarea
+              [(ngModel)]="newMessage.text"
+              name="message"
+              placeholder="Type your message..."
+            ></textarea>
+            <button type="button" (click)="sendMessage()">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<main class="main-content">
+  <h1>Wellcome {{ name }} ,{{ lastname }}</h1>
+
+  <div class="dashboard-cards">
+    <div class="card">
+      <h2>Total Étudiants</h2>
+      <p>{{ totalStudents }}</p>
+    </div>
+    <div class="card">
+      <h2>Total Professeurs</h2>
+      <p>{{ totalProfessors }}</p>
+    </div>
+    <div class="card">
+      <h2>Total Admins</h2>
+      <p>{{ totalAdmins }}</p>
+    </div>
+  </div>
+
+
+  <div class="action-section">
+    <h2>Actions Rapides</h2>
+    <button (click)="navigate('profil')">Modifier Profil</button>
+    <button (click)="navigate('verify-courses')">Vérifier Cours</button>
+  </div>
+</main>

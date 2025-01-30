@@ -1,0 +1,38 @@
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Dashboard</h2>
+      <ul class="nav-list">
+        <li><a href="#" (click)="navigate('home')">Home</a></li>
+        <li><a href="#" (click)="navigate('profil')">Gestion de l'utilisateur</a></li>
+        <li><a href="#" (click)="navigate('categorie')">Gestion de Catégorie</a></li>
+        <li><a href="#" (click)="navigate('profil-admin')">Gestion de profil</a></li>
+        <li><a href="#" (click)="navigate('communicate')">Communiquer</a></li>
+        <li><a href="#" (click)="navigate('payments')">Confirmer Paiement/Inscrit</a></li>
+        <li><a href="#" (click)="navigate('verif')">Vérif Cours</a></li>
+        <li><a href="#" (click)="navigate('block-user')">Bloquer</a></li>
+        <li><a href="#" (click)="logout()">Déconnexion</a></li>
+      </ul>
+    </aside>
+  
+    <div class="main-content">
+      <h1>Bloquer Utilisateur</h1>
+  
+      <div class="block-user-container">
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input type="text" placeholder="Search by name or role" [(ngModel)]="searchTerm" (input)="filterUsers()"/>
+        </div>
+  
+        <!-- User List -->
+        <div class="user-list">
+          <div class="user" *ngFor="let user of filteredUsers" (click)="selectUser(user)">
+            <h4>{{ user.name }}</h4>
+            <p>{{ user.role }}</p>
+            <button (click)="blockUser(user)">Block User</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

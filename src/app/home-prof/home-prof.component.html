@@ -1,0 +1,45 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>Teacher Dashboard</h2>
+    <ul class="nav-list">
+      <li><a routerLink="/home-prof">Home</a></li>
+      <li><a routerLink="/profilp">Manage Student</a></li>
+      <li><a routerLink="/com">Communicate</a></li>
+      <li><a routerLink="/upload">Upload Courses</a></li>
+      <li><a (click)="logout()">Logout</a></li>
+    </ul>
+  </aside>
+
+  <div class="course-container">
+    <h2>Your Courses</h2>
+
+  
+    <input  type="text"  [(ngModel)]="searchTerm"  (input)="filterCourses()"  placeholder="Search by Category or Title" />
+
+    <div *ngFor="let category of filteredGroupedCourses | keyvalue">
+      <div class="category-header" [style.backgroundColor]="getCategoryColor(category.key)">
+        <h3>{{ category.key }}</h3>
+        <button (click)="showAllCourses(category.key)">
+          {{ showAllCategoryCourses[category.key] ? 'Voir Moins' : 'Voir Plus' }}
+        </button>
+      </div>
+
+      <div class="courses-grid">
+        <div *ngFor="let course of (showAllCategoryCourses[category.key] ? category.value : category.value | slice: 0:4)" class="course-card">
+          <div *ngIf="editingCourseId === course?.Id_c" class="edit-form">
+           
+          </div>
+
+        
+          <h4>{{ course?.Titre }}</h4>
+          <p>{{ course?.Description }}</p>
+          <p>Duration: {{ course?.Duree }} hours</p>
+          <div class="button-group">
+            <button class="edit-button" (click)="editCourse(course)">Edit</button>
+            <button class="delete-button" (click)="deleteCourse(course?.Id_c ?? '')">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

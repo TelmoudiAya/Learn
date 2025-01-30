@@ -1,0 +1,40 @@
+<aside class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <ul class="nav-list">
+      <li><a routerLink='/home'>Home</a></li>
+      <li><a routerLink='/profil'>Gestion de Profil</a></li>
+      <li><a routerLink='/categorie'>Gestion de Catégorie</a></li>
+      <li><a routerLink='/communicate'>Communiquer</a></li>
+      <li><a routerLink='/payments'>Confirmer Paiement/Inscrit</a></li>
+      <li><a routerLink='/verif'>Vérif Cours</a></li>
+      <li><a routerLink='/block-user'>Bloquer</a></li>
+      <li><a href="#" (click)="logout()">Déconnexion</a></li>
+    </ul>
+  </aside>
+  <div class="verify-courses-container">
+    <h2>Vérification des Cours</h2>
+    
+
+    <div *ngFor="let course of courses">
+      <div class="course-item">
+        <h3>{{ course.titre }}</h3>
+        <p>Submitted by: {{ course.professor }}</p>
+        <button (click)="viewCourseDetails(course)">Voir Détails</button>
+      </div>
+    </div>
+    
+
+    <div *ngIf="selectedCourse" class="modal">
+      <div class="modal-content">
+        <h3>{{ selectedCourse.title }}</h3>
+        <p>{{ selectedCourse.description }}</p>
+    
+        
+        <textarea [(ngModel)]="reviewComment" placeholder="Ajouter un commentaire"></textarea>
+        <button (click)="approveCourse(selectedCourse)">Approuver</button>
+        <button (click)="rejectCourse(selectedCourse)">Rejeter</button>
+        <button (click)="closeModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+  

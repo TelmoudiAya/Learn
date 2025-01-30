@@ -1,0 +1,42 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>Student Dashboard</h2>
+    <ul class="nav-list">
+      <li><a routerLink="/home-stud">Home</a></li>
+      <li><a routerLink="/courses">Courses</a></li>
+      <li><a routerLink="/msg">Chat </a></li>
+      <li><a routerLink="/gestion">Manage Profile</a></li>
+      <li><a (click)="logout()">Logout</a></li>
+    </ul>
+  </aside>
+
+  <div class="main-content">
+    <h1>Welcome to Your Courses</h1>
+    <div *ngIf="studentEnrollmentStatus === 'Accepted'" class="enrollment-success-message">
+      <p>Your enrollment request has been accepted! You can now access the course.</p>
+    </div>
+    
+    <div *ngIf="studentEnrollmentStatus === 'Rejected'" class="enrollment-error-message">
+      <p>Your enrollment request has been rejected.</p>
+    </div>
+    
+    <div class="courses-container">
+      <h1 class="title">Available Courses</h1>
+      <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    
+      <div *ngFor="let category of getCategoryKeys()" class="category-section">
+        <h2 class="category-title">{{ category }}</h2>
+        <div class="courses-list">
+          <div *ngFor="let course of groupedCourses[category]" class="course-card">
+            <h3>{{ course.Titre }}</h3>
+            <p>{{ course.Description }}</p>
+            <p><strong>Duration:</strong> {{ course.Duree }}</p>
+            <p><strong>Price:</strong> {{ course.Prix }}</p>
+            <button class="enroll-btn" (click)="enrollInCourse(course.Id_c)">Enroll</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+</div>
