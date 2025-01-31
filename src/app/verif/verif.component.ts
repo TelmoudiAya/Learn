@@ -1,30 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getStorage } from 'firebase/storage';
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { getAuth, signOut } from 'firebase/auth';
-import { Router, RouterLink } from '@angular/router';
+import { AdminSidebarComponent } from '../layouts/admin-sidebar/admin-sidebar.component';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCzF_bGBdQPF0aF7ERIWwux0x60KR7F8i0",
-  authDomain: "learn-56bf4.firebaseapp.com",
-  projectId: "learn-56bf4",
-  storageBucket: "learn-56bf4.appspot.com",
-  messagingSenderId: "455565926861",
-  appId: "1:455565926861:web:f78a9f1ad60f2d7b6e6484",
-  measurementId: "G-BTBZFGMDVQ"
-};
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
+const db = getFirestore();
 
 @Component({
   selector: 'app-verif',
   standalone: true,
-  imports: [CommonModule, FormsModule,RouterLink],
+  imports: [CommonModule, FormsModule,RouterModule,AdminSidebarComponent],
   templateUrl: './verif.component.html',
   styleUrls: ['./verif.component.css']
 })
@@ -41,33 +28,26 @@ export class VerifComponent implements OnInit {
 
   async fetchCourses() {
     try {
-      const querySnapshot = await getDocs(collection(db, 'pendingCourses'));
+      const querySnapshot = await getDocs(collection(db, 'courses'));
       this.courses = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log(this.courses); 
     } catch (error) {
       console.error('Error fetching courses:', error);
     }
   }
-  
-  async fetchApprovedCourses() {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'courses')); 
-      this.courses = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-      console.error('Error fetching approved courses:', error);
-    }
-  }
-  
+
   viewCourseDetails(course: any) {
     this.selectedCourse = course;
   }
 
   async approveCourse(course: any) {
     try {
-      await updateDoc(doc(db, 'pendingCourses', course.id), {
-        status: 'approved',
-        adminComment: this.reviewComment
+      await setDoc(doc(db, 'courses', course.id), {
+        ...course,
+        Etat: 'approved'
       });
-      alert('Course approved!');
+      await deleteDoc(doc(db, 'courses', course.id));
+      alert('Course approved and moved to the main course list.');
       this.closeModal();
       await this.fetchCourses();
     } catch (error) {
@@ -77,8 +57,14 @@ export class VerifComponent implements OnInit {
 
   async rejectCourse(course: any) {
     try {
+      await setDoc(doc(db, 'rejectedCourses', course.id), {
+        ...course,
+        Etat: 'rejected',
+        adminComment: this.reviewComment
+      });
+
       await deleteDoc(doc(db, 'pendingCourses', course.id));
-      alert('Course rejected and removed.');
+      alert('Course rejected and the professor has been notified.');
       this.closeModal();
       await this.fetchCourses();
     } catch (error) {
@@ -93,13 +79,11 @@ export class VerifComponent implements OnInit {
 
   logout(): void {
     const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        console.log('User logged out.');
-        this.router.navigate(['/login']);
-      })
-      .catch((error) => {
-        console.error('Error logging out:', error);
-      });
+    auth.signOut().then(() => {
+      console.log('User logged out.');
+      this.router.navigate(['/login']);
+    }).catch(error => {
+      console.error('Error logging out:', error);
+    });
   }
 }

@@ -23,6 +23,7 @@ import { NgModule } from '@angular/core';
 import { ProfilAdminComponent } from './profil-admin/profil-admin.component';
 import { VerifComponent } from './verif/verif.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { ContactComponent } from './contact/contact.component';
 
 
 
@@ -30,12 +31,10 @@ export const routes: Routes = [
   { path: '', redirectTo: 'accueil', pathMatch: 'full' },
   {
     path: 'admin',component: AdminLayoutComponent,
-    children: [
-      
-    ]
+    children: []
   },
 
-      { path: '', component: HomeComponent },
+      { path: 'home', component: HomeComponent },
       { path: 'profil', component: ProfilComponent },
       { path: 'categorie', component: CategorieComponent },
       { path: 'communicate', component: CommunicateComponent },
@@ -43,6 +42,7 @@ export const routes: Routes = [
       { path: 'payments', component: PaymentsComponent },
       { path: 'profil-admin', component: ProfilAdminComponent },
       { path: 'verif', component: VerifComponent },
+      { path: 'contact', component: ContactComponent },
   
   
   

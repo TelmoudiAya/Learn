@@ -93,7 +93,7 @@ export class HomeStudComponent implements OnInit {
     }
   
     try {
-      // ✅ Fetch courses from Firestore
+    
       const snapshot = await getDocs(coursesRef);
       if (snapshot.empty) {
         console.warn('No courses found.');

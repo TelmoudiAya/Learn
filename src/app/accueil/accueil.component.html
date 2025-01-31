@@ -1,30 +1,45 @@
 <nav class="navbar">
-    <ul>
-      <li><a routerLink="/">Home</a></li>
-      <li><a routerLink="/courses">Courses</a></li>
-      <li><a routerLink="/contact">Contact</a></li>
-      <li><a routerLink="/about">About Us</a></li>
-      <li *ngIf="userLoggedIn"><button class="logout-btn" (click)="logout()">Logout</button></li>
-    </ul>
-  </nav>
-  
-  <div class="container">
-    <h1>Welcome to Our Learning Platform</h1>
-  
-    <div *ngIf="isLoading" class="loading-spinner"></div>
-  
-    <div *ngFor="let category of getCategoryKeys()">
-      <h2 class="category-title">{{ category }}</h2>
-      <div class="course-list">
-        <div *ngFor="let course of groupedCourses[category]" class="course-card">
-          <h3>{{ course.Titre }}</h3>
-          <p>{{ course.Description }}</p>
-          <p><strong>Duration:</strong> {{ course.Duree }}</p>
-          <p><strong>Price:</strong> {{ course.Prix }}</p>
-          <p><strong>Type:</strong> {{ course.Type }}</p>
-          <button (click)="navigateToCourse(course.id)" class="view-btn">View Course</button>
-        </div>
+  <ul>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/contact">Contact</a></li>
+    <li><a routerLink="/about">About Us</a></li>
+    <li *ngIf="!userLoggedIn"><button class="login-btn" (click)="navigateToLogin()">Login</button></li>
+    <li *ngIf="userLoggedIn"><button class="logout-btn" (click)="logout()">Logout</button></li>
+  </ul>
+</nav>
+
+<div class="container">
+  <h1>Welcome to Our Learning Platform</h1>
+
+  <div *ngIf="isLoading" class="loading-spinner"></div>
+
+  <div *ngFor="let category of getCategoryKeys()">
+    <h2 class="category-title">{{ category }}</h2>
+    <div class="course-list">
+      <div *ngFor="let course of getVisibleCourses(category)" class="course-card">
+        <h3>{{ course.Titre }}</h3>
+        <p>{{ course.Description }}</p>
+        <p><strong>Duration:</strong> {{ course.Duree }}</p>
+        <p><strong>Price:</strong> {{ course.Prix }}</p>
+        <button (click)="navigateToCourse(course.id)" class="view-btn">View Course</button>
       </div>
     </div>
+    <div *ngIf="showMore[category]">
+      <button (click)="toggleViewMore(category)" class="voir-plus-btn">Voir Moins</button> <!-- Voir Moins button -->
+    </div>
+    <div *ngIf="!showMore[category]">
+      <button (click)="toggleViewMore(category)" class="voir-plus-btn">Voir Plus</button> <!-- Voir Plus button -->
+    </div>
   </div>
-  
+
+  <div class="contact-details">
+    <p>Email: <a href="mailto:telmoudi.aya@gmail.com">telmoudi.aya&#64;gmail.com</a></p>
+    <p>Phone: <a href="tel:+12699145023">+12699145023</a></p>
+    <p>Address: Tunis gabes , 56789</p>
+    <div class="social-links">
+      <a href="https://facebook.com" target="_blank"><img src="assets/images/facebook.png" alt="Facebook"></a>
+      <a href="https://twitter.com" target="_blank"><img src="assets/images/twitter.png" alt="Twitter"></a>
+      <a href="https://linkedin.com" target="_blank"><img src="assets/images/linkedin.png" alt="LinkedIn"></a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="contact-container">
+    <h2>Contact Us</h2>
+    
+    <div class="admin-contact">
+      <h3>Admin Contact</h3>
+      <p>Email: <a href="mailto:{{ adminEmail }}">{{ adminEmail }}</a></p>
+    </div>
+  
+    <div class="professor-list">
+      <h3>Professors</h3>
+      <ul>
+        <li *ngFor="let professor of professors">
+          {{ professor.name }} - <a href="mailto:{{ professor.email }}">{{ professor.email }}</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="comment-section">
+      <h2>Leave a Comment</h2>
+      <form (submit)="submitComment($event)">
+        <textarea [(ngModel)]="newComment" name="commentText" placeholder="Write your comment..." required></textarea>
+
+       
+        <div class="stars">
+          <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+                (click)="setRating(star)"
+                [class.active]="star <= selectedRating">★</span>
+        </div>
+    
+        <button type="submit" class="submit-btn">Submit</button>
+      </form>
+    
+   
+      <div class="comments">
+        <div *ngFor="let comment of comments" class="comment">
+          <p>{{ comment.text }}</p>
+          <p class="stars">
+            <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+                  [class.active]="star <= comment.rating">★</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  

@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout.component';
+import { AdminSidebarComponent } from '../layouts/admin-sidebar/admin-sidebar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterOutlet,AdminSidebarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

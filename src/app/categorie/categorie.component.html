@@ -1,5 +1,5 @@
 <div class="dashboard-container">
-    <!-- Sidebar -->
+    
     <aside class="sidebar">
       <h2>Admin Dashboard</h2>
       <ul class="nav-list">
@@ -42,18 +42,18 @@
         </form>
       </div>
   
-      <!-- Categories Table -->
+    
       <table class="category-table">
         <thead>
           <tr>
-            <th>ID</th>
+
             <th>Nom</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let category of categories">
-            <td>{{ category.id }}</td>
+ 
             <td>{{ category.nom }}</td>
             <td>
               <button (click)="editCategory(category)">Edit</button>
@@ -63,7 +63,7 @@
         </tbody>
       </table>
   
-      <!-- Edit Category Form -->
+     
    
     </div>
   </div>

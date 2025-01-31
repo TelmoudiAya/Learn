@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { getFirestore, collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, Timestamp, getDocs } from 'firebase/firestore';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, signOut } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -21,52 +21,34 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-interface Course {
-  Titre: string;
-  Description: string;
-  Prix: string;
-  Duree: string;
-  Type: string;
-  Etat: string;
-  Contenu?: string;
-  UploadDate: Timestamp;
-  Url?: string;
-  Category: string;
-}
-
 @Component({
   selector: 'app-upload',
-  standalone:true,
-  imports:[CommonModule,FormsModule,RouterLink],
+  standalone: true,
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css']
 })
 export class UploadComponent implements OnInit {
-  newCourse: Course = {
+  newCourse = {
     Titre: '',
     Description: '',
     Prix: '',
     Duree: '',
     Type: '',
-    Etat: '',
+    Etat: 'pending', // Default status
     Contenu: '',
     UploadDate: Timestamp.now(),
     Url: '',
-    Category: ''
+    Category: '',
+    Professor: ''
   };
-  editingCourse: Course | null = null; // Stores the course being edited
   file: File | null = null;
   categories: { id: string; name: string }[] = []; 
-  courses: Course[] = []; // List of all courses
-  filteredCategories: string[] = []; // Stores filtered categories for search
-  searchTerm: string = ''; // User search term
-  categoryColors: { [key: string]: string } = {}; // Dynamic colors for categories
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.fetchCategories();
-    this.fetchCourses();
   }
 
   async fetchCategories(): Promise<void> {
@@ -77,49 +59,23 @@ export class UploadComponent implements OnInit {
         id: doc.id,
         name: doc.data()['nom'],
       }));
-      this.assignCategoryColors(); // Assign colors after fetching categories
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   }
 
-  async fetchCourses(): Promise<void> {
-    const coursesRef = collection(db, 'courses');
-    try {
-      const querySnapshot = await getDocs(coursesRef);
-      this.courses = querySnapshot.docs.map((doc) => doc.data() as Course);
-      this.filterCourses(); // Initialize filtered categories
-    } catch (error) {
-      console.error('Error fetching courses:', error);
-    }
-  }
-
-  assignCategoryColors(): void {
-    const colors = ['#FFD700', '#ADFF2F', '#40E0D0', '#FF69B4', '#87CEEB', '#FFA07A'];
-    this.categories.forEach((category, index) => {
-      this.categoryColors[category.name] = colors[index % colors.length];
-    });
-  }
-
-  filterCourses(): void {
-    const searchTermLower = this.searchTerm.toLowerCase();
-    this.filteredCategories = this.categories
-      .map((category) => category.name)
-      .filter((categoryName) => {
-        const categoryCourses = this.getCoursesByCategory(categoryName);
-        return (
-          categoryName.toLowerCase().includes(searchTermLower) ||
-          categoryCourses.some((course) => course.Titre.toLowerCase().includes(searchTermLower))
-        );
-      });
-  }
-
-  getCoursesByCategory(categoryName: string): Course[] {
-    return this.courses.filter((course) => course.Category === categoryName);
-  }
-
   async addCourse(): Promise<void> {
     this.newCourse.UploadDate = Timestamp.now();
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user && user.email) {  
+      this.newCourse.Professor = user.email; 
+    } else {
+      alert("You must be logged in to upload courses!");
+      return;
+    }
+    
+
     if (this.file) {
       const fileRef = ref(storage, `courses/${this.file.name}`);
       await uploadBytes(fileRef, this.file);
@@ -127,48 +83,28 @@ export class UploadComponent implements OnInit {
     }
 
     try {
-      await addDoc(collection(db, 'courses'), this.newCourse);
-      alert('Course uploaded successfully!');
-      this.fetchCourses(); // Refresh courses after adding
+      await addDoc(collection(db, 'pendingCourses'), this.newCourse);
+      alert('Course submitted for approval!');
+      this.router.navigate(['/home-prof']); 
     } catch (error) {
       console.error('Error adding course:', error);
     }
 
+    // Reset form
     this.newCourse = {
       Titre: '',
       Description: '',
       Prix: '',
       Duree: '',
       Type: '',
-      Etat: '',
+      Etat: 'pending',
       Contenu: '',
       UploadDate: Timestamp.now(),
       Url: '',
-      Category: ''
+      Category: '',
+      Professor: ''
     };
     this.file = null;
-  }
-
-  editCourse(course: Course): void {
-    this.editingCourse = { ...course }; // Clone the course to avoid direct mutation
-  }
-
-  async updateCourse(courseData :any): Promise<void> {
-    if (this.editingCourse) {
-      try {
-        await addDoc(collection(db, 'pendingCourses'), courseData);
-        const courseRef = collection(db, 'courses');
-        const docToUpdate = this.courses.find((course) => course.Titre === this.editingCourse?.Titre);
-        if (docToUpdate) {
-          await addDoc(courseRef, { ...this.editingCourse }); // Save changes
-          alert('Course updated successfully!');
-          this.fetchCourses(); // Refresh courses
-          this.editingCourse = null; // Reset editing state
-        }
-      } catch (error) {
-        console.error('Error updating course:', error);
-      }
-    }
   }
 
   onFileSelected(event: any): void {
@@ -185,14 +121,5 @@ export class UploadComponent implements OnInit {
       .catch((error) => {
         console.error('Error logging out:', error);
       });
-  }
-
-  getCategoryColor(categoryName: string): string {
-    return this.categoryColors[categoryName] || '#ddd'; // Default color if not assigned
-  }
-
-  showAllCourses(categoryName: string): void {
-    // Logic to expand and show all courses for a category
-    console.log(`Show all courses for category: ${categoryName}`);
   }
 }

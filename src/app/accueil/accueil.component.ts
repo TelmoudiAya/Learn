@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { Router, RouterLink } from '@angular/router';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-accueil',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule,RouterLink],
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.css']
 })
 export class AccueilComponent implements OnInit {
-  courses: any[] = []; // List of courses
-  groupedCourses: { [category: string]: any[] } = {}; // Grouped by category
+  courses: any[] = [];
+  groupedCourses: { [category: string]: any[] } = {};
   isLoading: boolean = true;
-  userLoggedIn: boolean = false; // Track if user is logged in
+  userLoggedIn: boolean = false;
+  showMore: { [category: string]: boolean } = {}; // Track visibility of "Voir Plus" / "Voir Moins"
 
   constructor(private router: Router) {}
 
@@ -24,17 +26,14 @@ export class AccueilComponent implements OnInit {
   }
 
   checkUserAuth(): void {
-    // Simulated login check (replace with real authentication logic)
-    this.userLoggedIn = false; // Set to false to enforce login request
+    this.userLoggedIn = false; // Replace with real authentication check
   }
 
   async loadCourses(): Promise<void> {
     const db = getFirestore();
     try {
-      // Adjusting query to fetch all approved courses without filtering by category
-      const coursesQuery = query(collection(db, 'courses'));
+      const coursesQuery = collection(db, 'courses');
       const querySnapshot = await getDocs(coursesQuery);
-
       if (!querySnapshot.empty) {
         this.courses = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -42,15 +41,10 @@ export class AccueilComponent implements OnInit {
           Description: doc.data()['Description'] || 'No description',
           Duree: doc.data()['Duree'] || 'Unknown duration',
           Prix: doc.data()['Prix'] || 'Unknown price',
-          Type: doc.data()['Type'] || 'Unknown type',
           Category: doc.data()['Category'] || 'Uncategorized',
-          UploadDate: doc.data()['UploadDate']?.toDate() || new Date(),
           Url: doc.data()['Url'] || ''
         }));
-
         this.groupCoursesByCategory(this.courses);
-      } else {
-        console.warn('No courses found.');
       }
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -68,10 +62,24 @@ export class AccueilComponent implements OnInit {
       groups[category].push(course);
       return groups;
     }, {} as { [key: string]: any[] });
+    
+    // Initialize the "showMore" state for each category
+    Object.keys(this.groupedCourses).forEach(category => {
+      this.showMore[category] = false;
+    });
   }
 
   getCategoryKeys(): string[] {
     return Object.keys(this.groupedCourses);
+  }
+
+  getVisibleCourses(category: string): any[] {
+    const courses = this.groupedCourses[category];
+    return this.showMore[category] ? courses : courses.slice(0, 3); // Show first 3 courses initially
+  }
+
+  toggleViewMore(category: string): void {
+    this.showMore[category] = !this.showMore[category]; // Toggle the visibility
   }
 
   navigateToCourse(courseId: string): void {
@@ -80,6 +88,10 @@ export class AccueilComponent implements OnInit {
     } else {
       this.router.navigate([`/course/${courseId}`]);
     }
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   logout(): void {
