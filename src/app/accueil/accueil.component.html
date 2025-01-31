@@ -1,1 +1,30 @@
-<p>accueil works!</p>
+<nav class="navbar">
+    <ul>
+      <li><a routerLink="/">Home</a></li>
+      <li><a routerLink="/courses">Courses</a></li>
+      <li><a routerLink="/contact">Contact</a></li>
+      <li><a routerLink="/about">About Us</a></li>
+      <li *ngIf="userLoggedIn"><button class="logout-btn" (click)="logout()">Logout</button></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <h1>Welcome to Our Learning Platform</h1>
+  
+    <div *ngIf="isLoading" class="loading-spinner"></div>
+  
+    <div *ngFor="let category of getCategoryKeys()">
+      <h2 class="category-title">{{ category }}</h2>
+      <div class="course-list">
+        <div *ngFor="let course of groupedCourses[category]" class="course-card">
+          <h3>{{ course.Titre }}</h3>
+          <p>{{ course.Description }}</p>
+          <p><strong>Duration:</strong> {{ course.Duree }}</p>
+          <p><strong>Price:</strong> {{ course.Prix }}</p>
+          <p><strong>Type:</strong> {{ course.Type }}</p>
+          <button (click)="navigateToCourse(course.id)" class="view-btn">View Course</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

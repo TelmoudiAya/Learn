@@ -27,15 +27,15 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 
 
 export const routes: Routes = [
-
-  // {
-  //   path: 'admin',component: AdminLayoutComponent,
-  //   children: [
+  { path: '', redirectTo: 'accueil', pathMatch: 'full' },
+  {
+    path: 'admin',component: AdminLayoutComponent,
+    children: [
       
-  //   ]
-  // },
+    ]
+  },
 
-  { path: '', component: HomeComponent },
+      { path: '', component: HomeComponent },
       { path: 'profil', component: ProfilComponent },
       { path: 'categorie', component: CategorieComponent },
       { path: 'communicate', component: CommunicateComponent },
@@ -57,7 +57,7 @@ export const routes: Routes = [
   { path: 'courses', component: CoursesComponent },
   { path: 'upload', component: UploadComponent },
   { path: 'tests', component: TestsComponent },
-  { path: '', redirectTo: 'accueil', pathMatch: 'full' },
+ 
   { path: 'accueil', component: AccueilComponent },
   { path: 'login', component: LoginComponent },
   { path: 'inscrit', component: InscritComponent },
